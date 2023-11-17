@@ -6,14 +6,16 @@
 // Struct moved to header file
 
 // Define any additional variables here
+#define TimeSize
+#define DateSize
 // Global variables for filename and FITNESS_DATA array
 char FileName[1000];
 int buffer_size = 1000;
 int Records_Counter = 0;
 FILE *file;
 int MinSteps = 9999999;
-char minTime[buffer_size];
-char minDate[buffer_size];
+char minTime[TimeSize];
+char minDate[DateSize];
 //DECLARING MOST OF MY VARIABLES HERE MEANING THEY ARE GLOBAL AND CAN BE USED IN THE SWITCH FUNCTION
 
 
@@ -147,7 +149,7 @@ int main() {
 
                 
             }
-            printf("Fewest steps: %s %s",minTime, minDate);
+            printf("Fewest steps: %s %s\n", minDate, minTime);
             
             break;
 
