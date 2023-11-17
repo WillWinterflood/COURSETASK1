@@ -1,0 +1,37 @@
+switch (choice) {
+            case "A":
+                printf("Input Filename: \n");
+                scanf("%s", FileName);
+                FILE *file = fopen(FileName, "r");
+                if (file == NULL) {
+                    perror("Error: could not open file");
+                    return 1;
+
+                }
+                break;
+            case "B":
+                while (fgets(read, buffer, file) != NULL) {
+
+                Records_Counter = Records_Counter + 1;
+                //Counts how many lines there are in a file and increments 
+                // the record counter by one for every line 
+                }
+                printf("Number of records in file: %d\n", Records_Counter);
+                //Printing the records counter
+                break; 
+            case "C":
+                int Records_Counter = 0;
+                int buffer = 250;
+                //Max characters in each line 
+                char read[buffer];
+                char filename [] = "FitnessData_2023.csv";
+                FILE *file = fopen(filename, "r");
+                while (fgets(read, buffer, file) != NULL) {
+                    char str[] = "FitnessData_2023.csv";
+                    char* piece = strtok(str, "/");
+                    printf("%s\n", piece);
+                    piece = strtok(NULL, "/");
+                    piece = ("%s\n", piece);
+                    return 0;
+                }
+                break;
