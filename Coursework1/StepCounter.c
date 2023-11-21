@@ -6,16 +6,15 @@
 // Struct moved to header file
 
 // Define any additional variables here
-#define TimeSize
-#define DateSize
 // Global variables for filename and FITNESS_DATA array
 char FileName[1000];
 int buffer_size = 1000;
 int Records_Counter = 0;
 FILE *file;
 int MinSteps = 9999999;
-char minTime[TimeSize];
-char minDate[DateSize];
+char minTime[6];
+char minDate[11];
+int MaxSteps = -1;
 //DECLARING MOST OF MY VARIABLES HERE MEANING THEY ARE GLOBAL AND CAN BE USED IN THE SWITCH FUNCTION
 
 
@@ -131,23 +130,30 @@ int main() {
                 return 1;
             }
             
+            FITNESS_DATA listofffitnessdata[500];
+            FITNESS_DATA loweststeps;
+            int count = 0;
+
             while (fgets(line,buffer_size,file) != NULL) {
-                char date[buffer_size];
-                char time[buffer_size];
-                char steps[buffer_size];
+                int CurrentSteps[1000];
+
+                char date[11];
+                char time[6];
+                char steps[100];
                 //Declaring them all as characters as this means that you can append them to a list
                 tokeniseRecord(line,",", date, time, steps);
                 
-                int CurrentSteps = atoi(steps);
+                CurrentSteps[count] = atoi(steps);
 
-                if (CurrentSteps < MinSteps) {
-                    MinSteps = CurrentSteps;
-                    strcpy(minTime, time);
-                    strcpy(minDate, date);
-
-                }
-
+               
                 
+                if (CurrentSteps[count] < MinSteps) {
+                    MinSteps = CurrentSteps[count];
+                    strcpy(minDate, date);
+                    strcpy(minTime, time);
+                    
+                     
+                }
             }
             printf("Fewest steps: %s %s\n", minDate, minTime);
             
@@ -155,7 +161,37 @@ int main() {
 
         case 'D':
         case 'd':
-            return 0;
+            file = fopen(FileName,"r");
+            if (file == NULL) {
+
+                perror("Error: Could not open the file");
+                return 1;
+            }
+            
+            count = count*0;
+
+            while (fgets(line,buffer_size,file) != NULL) {
+                int CurrentSteps[1000];
+
+                char date[11];
+                char time[6];
+                char steps[100];
+                //Declaring them all as characters as this means that you can append them to a list
+                tokeniseRecord(line,",", date, time, steps);
+                
+                CurrentSteps[count] = atoi(steps);
+
+               
+                
+                if (CurrentSteps[count] > MaxSteps) {
+                    MaxSteps = CurrentSteps[count];
+                    strcpy(minDate, date);
+                    strcpy(minTime, time);
+                    
+                     
+                }
+            }
+            printf("Most steps: %s %s\n", minDate, minTime);
             break;
 
         case 'E':
