@@ -63,13 +63,13 @@ int main() {
 
     // these lines read in a line from the stdin (where the user types)
     // and then takes the actual string out of it
-    // this removes any spaces or newlines.
-    //fgets(line, buffer_size, stdin);    
+    // this removes any spaces or newlines.   
 
     
 
     while (1)
     {
+        printf("Menu Options:\n");
         
         printf("A: Specify the filename to be imported - you need to check that the file opened correctly.\n");
         printf("B: Display the total number of records in the file\n");
@@ -78,6 +78,7 @@ int main() {
         printf("E: Find the mean step count of all the records in the file\n");
         printf("F: Find the longest continuous period where the step count is above 500 steps\n");
         printf("Q: Exit\n");
+        printf("Enter Choice: ");
         scanf(" %c", &choice);
         getchar();
 
@@ -93,10 +94,11 @@ int main() {
             scanf("%s", FileName);
             file = fopen(FileName, "r");
             if (file == NULL) {
-                perror("Error: could not open the file. \n");
+                perror("Error: could not find or open the file. \n");
                 return 1;
 
             }
+            printf("File successfully loaded.\n");
             fclose(file);
             break;
 
@@ -196,12 +198,102 @@ int main() {
 
         case 'E':
         case 'e':
-            return 0;
+            file = fopen(FileName,"r");
+            if (file == NULL) {
+
+                perror("Error: Could not open the file");
+                return 1;
+            }
+            
+            char date[11];
+            char time[6];
+            char steps_char[1000];
+            int steps[1000];
+            int meansteps;
+            int sumsteps;
+            int linecount = 0;
+
+            while (fgets(line,buffer_size,file) != NULL) {
+                linecount = linecount + 1;
+                tokeniseRecord(line, ",", date, time, steps_char);
+                steps[linecount] = atoi(steps_char);
+                sumsteps += steps[linecount];
+            }
+            meansteps = sumsteps / linecount;
+            printf("%d\n", meansteps);  
             break;
 
         case 'F':
         case 'f':
-            return 0;
+            file = fopen(FileName,"r");
+            if (file == NULL) {
+
+                perror("Error: Could not open the file");
+                return 1;
+            }
+            int fivecount = 0;
+            int steps1;
+            int secondcounter = 0;
+            char startdate[11];
+            char enddate[11];
+            char currentstartdate[11];
+            char currentenddate[11];
+            while (fgets(line,buffer_size,file) != NULL) {
+                steps1 = atoi(steps_char);
+
+                if (steps1 > 500) {
+                    if (fivecount > 0) {
+                        //strcpy(currentenddate, currentstartdate);
+                        fivecount = fivecount + 1;
+
+                    }
+                    else {
+                        strcpy(currentstartdate, date);
+                        fivecount = fivecount + 1;
+                    }
+                }
+                
+                else {
+                    strcpy(currentenddate, date);
+                    if (secondcounter > fivecount) {
+                        secondcounter = secondcounter;
+                    }
+                    else {
+                        secondcounter = fivecount;
+                        strcpy(startdate, currentstartdate);
+                        strcpy(enddate, currentenddate);
+                    }
+                }
+
+            }
+                
+            printf("Longest period start date: %s\n", startdate);
+            printf("Longest period end date: %s\n", enddate);
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                /*tokeniseRecord(line, ",", date, time, steps_char);
+                steps[fivecount] = atoi(steps_char);
+                while (steps[fivecount] > 500) {
+                    fivecount = fivecount + 1;
+                    if (fivecount > secondcounter) {
+                        secondcounter = fivecount;
+                        fivecount = 0;
+                    }
+                    else {
+                        fivecount = 0;
+                    }
+                }
+            }
+            fclose(file);
+            printf("%d\n", secondcounter);*/
             break;
 
         case 'Q':
@@ -211,7 +303,7 @@ int main() {
 
         // if they type anything else:
         default:
-            printf("Invalid choice\n");
+            printf("Invalid choice. Try again.\n");
             break;
         }
     }
