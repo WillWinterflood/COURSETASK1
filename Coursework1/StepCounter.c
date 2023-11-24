@@ -238,37 +238,50 @@ int main() {
             char enddate[11];
             char currentstartdate[11];
             char currentenddate[11];
+            char starttime[6];
+            char endtime[6];
+            char currentstarttime[6];
+            char currentendtime[6];
+            FITNESS_DATA current = {};
             while (fgets(line,buffer_size,file) != NULL) {
+                tokeniseRecord(line,",",current.date,current.time,steps_char);
                 steps1 = atoi(steps_char);
 
                 if (steps1 > 500) {
                     if (fivecount > 0) {
-                        //strcpy(currentenddate, currentstartdate);
+                        strcpy(currentenddate, currentstartdate);
+                        strcpy(currentendtime, currentstarttime);
                         fivecount = fivecount + 1;
 
                     }
                     else {
-                        strcpy(currentstartdate, date);
+                        strcpy(currentstartdate, current.date);
+                        strcpy(currentstarttime, current.time);
                         fivecount = fivecount + 1;
                     }
                 }
                 
                 else {
-                    strcpy(currentenddate, date);
+                    strcpy(currentenddate, current.date);
+                    strcpy(currentendtime, current.time);
                     if (secondcounter > fivecount) {
                         secondcounter = secondcounter;
+                        fivecount = 0;
                     }
                     else {
                         secondcounter = fivecount;
                         strcpy(startdate, currentstartdate);
+                        strcpy(starttime, currentstarttime);
                         strcpy(enddate, currentenddate);
+                        strcpy(endtime, currentendtime);
+                        fivecount = 0;
                     }
                 }
 
             }
                 
-            printf("Longest period start date: %s\n", startdate);
-            printf("Longest period end date: %s\n", enddate);
+            printf("Longest period start date: %s %s\n", startdate, starttime);
+            printf("Longest period end date: %s %s\n", enddate, endtime);
                 
                 
                 
