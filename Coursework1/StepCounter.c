@@ -70,6 +70,7 @@ int main() {
     while (1)
     {
         printf("Menu Options:\n");
+        // This is the menu of options that the user can choose from
         
         printf("A: Specify the filename to be imported - you need to check that the file opened correctly.\n");
         printf("B: Display the total number of records in the file\n");
@@ -80,9 +81,9 @@ int main() {
         printf("Q: Exit\n");
         printf("Enter Choice: ");
         scanf(" %c", &choice);
+        // defining the choice as a character 
         getchar();
-
-
+        // getchar(), this read the single character and reads it as an unsigned char
 
         // switch statement to control the menu.
         switch (choice)
@@ -95,6 +96,7 @@ int main() {
             file = fopen(FileName, "r");
             if (file == NULL) {
                 perror("Error: could not find or open the file. \n");
+                // Error message.
                 return 1;
 
             }
@@ -105,6 +107,7 @@ int main() {
         case 'B':
         case 'b':
             Records_Counter = 0;
+            // same as in task 1 
             file = fopen(FileName, "r");
             if (file == NULL) {
                 perror("Error: Could not open the file. \n");
@@ -146,6 +149,7 @@ int main() {
                 tokeniseRecord(line,",", date, time, steps);
                 
                 CurrentSteps[count] = atoi(steps);
+                // changing steps into Currentsteps[count] which changes a chraracter into an integer 
 
                
                 
@@ -153,6 +157,8 @@ int main() {
                     MinSteps = CurrentSteps[count];
                     strcpy(minDate, date);
                     strcpy(minTime, time);
+                    // This if statement is saying that if the steps is under the MinSteps(which is declared in the global section as 999999)
+                    //  then it redefines MinSteps and copies the date and the time in that line to be then printed.
                     
                      
                 }
@@ -171,10 +177,10 @@ int main() {
             }
             
             count = count*0;
+            //Reseting the count to 0 after the previous case 
 
             while (fgets(line,buffer_size,file) != NULL) {
                 int CurrentSteps[1000];
-
                 char date[11];
                 char time[6];
                 char steps[100];
@@ -194,6 +200,8 @@ int main() {
                 }
             }
             printf("Most steps: %s %s\n", minDate, minTime);
+            //This is essentially the same code as case C however the MaxSteps is set to -1 in the global variables area and currentsteps[count]
+            // only changes when it is greater than MaxSteps
             break;
 
         case 'E':
@@ -218,6 +226,8 @@ int main() {
                 tokeniseRecord(line, ",", date, time, steps_char);
                 steps[linecount] = atoi(steps_char);
                 sumsteps += steps[linecount];
+                //This line sums the values in the array
+                //every line the code goes through in the file, linecount increments by 1 
             }
             meansteps = sumsteps / linecount;
             printf("%d\n", meansteps);  
@@ -242,79 +252,59 @@ int main() {
             char endtime[6];
             char currentstarttime[6];
             char currentendtime[6];
+            //declaring all my variables im going to use in this case
             FITNESS_DATA current = {};
+            //This holds each individual lines date and time value as the while loop is going through it.
             while (fgets(line,buffer_size,file) != NULL) {
                 tokeniseRecord(line,",",current.date,current.time,steps_char);
+                //splits the line up when theres a comma
                 steps1 = atoi(steps_char);
+                //steps_char is defined in the previous case, therefore as it is a character we need to redeclare it in this case as steps1 which is an integer
 
                 if (steps1 > 500) {
                     if (fivecount > 0) {
-                        strcpy(currentenddate, currentstartdate);
-                        strcpy(currentendtime, currentstarttime);
-                        fivecount = fivecount + 1;
-
-                    }
-                    else {
-                        strcpy(currentstartdate, current.date);
-                        strcpy(currentstarttime, current.time);
-                        fivecount = fivecount + 1;
-                    }
-                }
-                
-                else {
                     strcpy(currentenddate, current.date);
                     strcpy(currentendtime, current.time);
-                    if (secondcounter > fivecount) {
-                        secondcounter = secondcounter;
-                        fivecount = 0;
-                    }
+                    }   
                     else {
-                        secondcounter = fivecount;
-                        strcpy(startdate, currentstartdate);
-                        strcpy(starttime, currentstarttime);
-                        strcpy(enddate, currentenddate);
-                        strcpy(endtime, currentendtime);
-                        fivecount = 0;
+                    strcpy(currentstartdate, current.date);
+                    strcpy(currentstarttime, current.time);
                     }
-                }
+                    fivecount = fivecount + 1;
+                } 
+                else {
+                    if (fivecount > 0) {
+                    //if the counter has already started then there is no need to set current.date to currentstartdate
+                        if (fivecount > secondcounter) {
+                            secondcounter = fivecount;
+                            strcpy(startdate, currentstartdate);
+                            strcpy(starttime, currentstarttime);
+                            strcpy(enddate, currentenddate);
+                            strcpy(endtime, currentendtime);
+                        }
+                        fivecount = 0; //This resets the count for the next period which over 500 steps is achieved.
+        }
+    }
+}
 
+            //This is checking whether the last counter of a period is greater than the second last counter of an period
+            if (fivecount > secondcounter) {
+                strcpy(startdate, currentstartdate);
+                strcpy(starttime, currentstarttime);
+                strcpy(enddate, currentenddate);
+                strcpy(endtime, currentendtime);
             }
-                
+
             printf("Longest period start date: %s %s\n", startdate, starttime);
             printf("Longest period end date: %s %s\n", enddate, endtime);
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                /*tokeniseRecord(line, ",", date, time, steps_char);
-                steps[fivecount] = atoi(steps_char);
-                while (steps[fivecount] > 500) {
-                    fivecount = fivecount + 1;
-                    if (fivecount > secondcounter) {
-                        secondcounter = fivecount;
-                        fivecount = 0;
-                    }
-                    else {
-                        fivecount = 0;
-                    }
-                }
-            }
-            fclose(file);
-            printf("%d\n", secondcounter);*/
             break;
-
         case 'Q':
         case 'q':
         return 0;
+        //Q is quit and when this is typed the code ends 
             break;
 
-        // if they type anything else:
+        // If they type another character which is not in the menu it will come back with this error message.
         default:
             printf("Invalid choice. Try again.\n");
             break;
