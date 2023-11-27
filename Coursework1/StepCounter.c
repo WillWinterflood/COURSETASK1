@@ -225,12 +225,14 @@ int main() {
                 linecount = linecount + 1;
                 tokeniseRecord(line, ",", date, time, steps_char);
                 steps[linecount] = atoi(steps_char);
-                sumsteps += steps[linecount];
+                sumsteps = steps[linecount] + sumsteps;
                 //This line sums the values in the array
                 //every line the code goes through in the file, linecount increments by 1 
             }
+
             meansteps = sumsteps / linecount;
             printf("%d\n", meansteps);  
+            sumsteps = 0;
             break;
 
         case 'F':
