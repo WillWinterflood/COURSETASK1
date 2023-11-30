@@ -26,13 +26,13 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
 }
 //Void function is outside the main function to ensure that the qsort works and the steps are organised in descending order 
 int CompareSteps(const void *a, const void *b) {
-    return (*(int *)b - *(int *)a);  
+    return ((FitnessData *)b)-> steps - (FitnessData *)a -> steps;  
 }
 
 
 
 int main() {
-    int buffer = 250;
+        int buffer = 250;
     //Max characters in each line 
     char read[buffer];
     // stores each line that will be read from the file 
@@ -46,7 +46,8 @@ int main() {
         // if file cannot be opened, it returns 1 and prints ""
     }
     int x = 0;
-    FitnessData FitnessFile[x];
+    int MaxLines = 1000;
+    FitnessData FitnessFile[MaxLines];
     while (fgets(read, buffer, file) != NULL) {
         char CSteps[6];
         // tokenise only works with chracters therefore temporarily letting it become
@@ -66,7 +67,7 @@ int main() {
     for (int i = 0; i < x; i++) {
         printf("%d", FitnessFile[i].steps);
     }
-      
+    return 0;
 }
 
 
