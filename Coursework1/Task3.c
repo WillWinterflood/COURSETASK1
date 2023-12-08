@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+//Defining new variables
+#define MaxBufferLength 1000
+
+
 // Define the struct for the fitness data
 typedef struct {
     char date[11];
@@ -51,10 +55,11 @@ int main() {
 
     char tempdate[11];
     char temptime[6];
-    char tempsteps[1000];
+    char tempsteps[MaxBufferLength];
     int count = 0;
     int steps;
     int n;
+    int *StepPtr = &steps;
     FILE *OutputFile;
     char OutFilename[] = "FitnessData_2023.csv.tsv";
 
@@ -62,43 +67,46 @@ int main() {
     //Open file
     printf("Enter Filename: ");
     scanf("%s", filename);
-    FILE *inputfile = fopen(filename, "r"); //to read
-    if (inputfile == NULL)
+    FILE *file = fopen(filename, "r"); //to read
+    if (file == NULL)
     {
-        perror("");
+        perror("Invalid: Invalid File");
         return 1;
     }
+    int buffer;
+    char line_buffer[MaxBufferLength];
 
-    int buffer[1000];
-    char line_buffer[buffer];
-
-    while (fgets(line_buffer, buffer, inputfile) != NULL) //loop through the csv record by record
+    while (fgets(line_buffer, MaxBufferLength, file) != NULL) //loop through the csv record by record
     {
-        tokeniseRecord(line_buffer, ",", tempdate, temptime, tempsteps);
+        tokeniseRecord(line_buffer, ',', tempdate, temptime, StepPtr);
         //copy all the temporary data from the cycle to the array of fitness_data whilst checking if NULL data then return 1
-        tempsteps[count] = atoi(steps);
 
-        
         count = count + 1;
 
     }
 
 
-    InsertionSort(steps, n);
+    InsertionSort(StepPtr, count);
 
-    printArray(steps, n);
+    printArray(StepPtr, count);
 
 
     OutputFile = fopen(OutFilename, "w");
 
-    if (OutFilename == NULL) {
+
+    if (OutputFile == NULL) {
         perror("Error opening and writing to file");
         return 1;
     }
-
-    for (int i = 0; i < n; i++) {
-        printf(OutFilename, "%s %s %d", tempdate, temptime, steps);
+    else {
+        printf("second file loaded.");
+    }
+    for (int i = 0; i < count; i++) {
+        fprintf(OutputFile, "%s %s %d\n", tempdate, temptime, StepPtr[i]);
     }
 
+    fclose(OutputFile);
+
+    return 0;
 
 }

@@ -78,7 +78,7 @@ int main() {
         char CSteps[6];
         // tokenise only works with chracters therefore temporarily letting it become
         // a character so then turn it back to an integer
-        tokeniseRecord(read, ",", FitnessFile[x].date, FitnessFile[x].time, CSteps);
+        tokeniseRecord(read, ',', FitnessFile[x].date, FitnessFile[x].time, CSteps);
         // makes an array
         
         int steps;
