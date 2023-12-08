@@ -258,7 +258,7 @@ int main() {
             FITNESS_DATA current = {};
             //This holds each individual lines date and time value as the while loop is going through it.
             while (fgets(line,buffer_size,file) != NULL) {
-                tokeniseRecord(line,",",current.date,current.time,steps_char);
+                tokeniseRecord(line ,"," ,current.date ,current.time ,steps_char);
                 //splits the line up when theres a comma
                 steps1 = atoi(steps_char);
                 //steps_char is defined in the previous case, therefore as it is a character we need to redeclare it in this case as steps1 which is an integer

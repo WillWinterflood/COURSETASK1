@@ -24,116 +24,81 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
         }
     }
 }
-//Void function is outside the main function to ensure that the qsort works and the steps are organised in descending order 
-int CompareSteps(const void *a, const void *b) {
-    return ((FitnessData *)b)-> steps - (FitnessData *)a -> steps;  
-}
+void InsertionSort(int steps[], int n) {
+    int i, key, j;
+    for(i = 1; i < n; i++) {
+        key = steps[i];
+        j = i - 1; 
 
+        while (j >= 0 && steps[j] > key) {
+            steps[j + 1] = steps[j];
+            j = j - 1;
+        }
+        steps[j + 1] = key;
+    }
+}
+void printArray(int steps[], int size) { 
+    int i;
+    for (i = 0; i < size; i++) 
+        printf("%d", steps[i]);
+    printf("\n");
+}
 
 
 int main() {
-        int buffer = 250;
-    //Max characters in each line 
-    char read[buffer];
-    // stores each line that will be read from the file 
-    char filename [] = "FitnessData_2023.csv";
-    FILE *file = fopen(filename, "r");
-    // opens the file and reads it only 
-    if (file == NULL) {
-        // handles error
+    char filename[] = "FitnessData_2023.csv";
+
+
+    char tempdate[11];
+    char temptime[6];
+    char tempsteps[1000];
+    int count = 0;
+    int steps;
+    int n;
+    FILE *OutputFile;
+    char OutFilename[] = "FitnessData_2023.csv.tsv";
+
+
+    //Open file
+    printf("Enter Filename: ");
+    scanf("%s", filename);
+    FILE *inputfile = fopen(filename, "r"); //to read
+    if (inputfile == NULL)
+    {
         perror("");
         return 1;
-        // if file cannot be opened, it returns 1 and prints ""
     }
-    int x = 0;
-    int MaxLines = 1000;
-    FitnessData FitnessFile[MaxLines];
-    while (fgets(read, buffer, file) != NULL) {
-        char CSteps[6];
-        // tokenise only works with chracters therefore temporarily letting it become
-        // a character so then turn it back to an integer
-        tokeniseRecord(read, ",", FitnessFile[x].date, FitnessFile[x].time, CSteps);
-        // makes an array
-        int steps;
-        sscanf(CSteps, "%d", &steps);
-        //Converting CSteps back into steps (integer), to then be 
-        // stored in the array
 
-        FitnessFile[x].steps = steps;
-        x++;
-    }
-    fclose(file);
-    qsort(FitnessFile, x, sizeof(FitnessData), CompareSteps);
-    for (int i = 0; i < x; i++) {
-        printf("%d", FitnessFile[i].steps);
-    }
-    return 0;
-}
+    int buffer[1000];
+    char line_buffer[buffer];
 
+    while (fgets(line_buffer, buffer, inputfile) != NULL) //loop through the csv record by record
+    {
+        tokeniseRecord(line_buffer, ",", tempdate, temptime, tempsteps);
+        //copy all the temporary data from the cycle to the array of fitness_data whilst checking if NULL data then return 1
+        tempsteps[count] = atoi(steps);
 
-
-
-
-
-
-
-
-
-/*int count = 0;
-int MaxSteps = -1;
-int CurrentSteps[1000];
-int buffer = 250;
-int buffer_size[1000];
-char line[buffer];
-FILE* NewFile;
-char NewFilename[] = "FitnessData_2023.csv.tsv";
-
-char FileName[] = "FitnessData_2023.csv";
-
-printf("Input Filename: ");
-scanf("%s", FileName);
-FILE* file = fopen(FileName, "r");
-if (file == NULL) {
-perror("Error: could not find or open the file. \n");
-// Error message.
-return 1;
-
-}
-printf("File successfully loaded.\n");
-
-while(fgets(line, buffer, file) != NULL) {
-
-char date[11];
-char time[6];
-char steps[100];
-int arr[];
-int *size;
-//Declaring them all as characters as this means that you can append them to a list
-tokeniseRecord(line,",", date, time, steps);
-    
-CurrentSteps[count] = atoi(steps);
-// changing steps into Currentsteps[count] which changes a chraracter into an integer 
-
-    
-for (i = *size - 1; i >= 0 && arr[i] < steps; i--) {
-arr[i + 1] = arr[i];
-
-}      
-if (CurrentSteps[count] > MaxSteps) {
-MaxSteps = CurrentSteps[count];
-NewFile = fopen("%s", NewFilename);
-if (NewFile != NULL) {
-    fprintf("%s", line);
-    
-}
-            
-}
+        
+        count = count + 1;
 
     }
-*/
 
 
+    InsertionSort(steps, n);
+
+    printArray(steps, n);
 
 
-    
-    
+    OutputFile = fopen(OutFilename, "w");
+
+    if (OutFilename == NULL) {
+        perror("Error opening and writing to file");
+        return 1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        printf(OutFilename, "%s %s %d", tempdate, temptime, steps);
+    }
+
+
+}
